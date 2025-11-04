@@ -143,4 +143,47 @@ async def status_handler(bot: Client, m: Message):
                     await m.reply_text("⚠️ Unable to fetch status from server.")
     except Exception as e:
         await m.reply_text(f"❌ **Status Check Failed:** `{e}`")
-            
+
+@bot.on_message(filters.command(["restart"]))
+async def restart_handler(bot: Client, m: Message):
+    try:
+        await m.reply_text("🔁 Restarting bot, please wait...")
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    except Exception as e:
+        await m.reply_text(f"❌ **Restart failed:** `{e}`")
+
+
+@bot.on_message(filters.command(["help"]))
+async def help_handler(bot: Client, m: Message):
+    help_text = (
+        "🧠 **Bot Help Menu**\n\n"
+        "Here’s what I can do:\n"
+        "├── `/start` → Start the bot\n"
+        "├── `/stop` → Stop the bot\n"
+        "├── `/txt` → Download TXT file\n"
+        "├── `/status` → Check API status\n"
+        "├── `/restart` → Restart the bot\n"
+        "└── `/help` → Show this help message"
+    )
+    await m.reply_text(help_text)
+
+
+async def main():
+    print("🚀 Bot is starting...")
+    await bot.start()
+    print("✅ Bot is running successfully!")
+    await idle()
+    await bot.stop()
+    print("🛑 Bot stopped.")
+
+
+if __name__ == "__main__":
+    try:
+        import asyncio
+        from pyrogram import idle
+        asyncio.get_event_loop().run_until_complete(main())
+    except KeyboardInterrupt:
+        print("🛑 Bot manually stopped by user.")
+    except Exception as e:
+        print(f"❌ Unexpected Error: {e}")
+    
