@@ -457,4 +457,44 @@ async def watermark_pdf(file_path, watermark_text):
 
     return new_file_path
 
+import requests
+from urllib.parse import unquote
+
+# 🔹 Handle rwa-play-on PDF download
+def download_pdf_proxy(url, name="Downloaded_File.pdf"):
+    try:
+        decoded = unquote(url)
+        if "rwa-play-on.vercel.app/pdf" not in decoded:
+            print("❌ Not a supported PDF link:", decoded)
+            return None
+        print(f"🔽 Downloading PDF from {decoded}")
+        r = requests.get(decoded, allow_redirects=True, timeout=120)
+        if r.status_code == 200:
+            with open(name, "wb") as f:
+                f.write(r.content)
+            print(f"✅ Saved as {name}")
+            return name
+        else:
+            print("❌ PDF download failed:", r.status_code)
+            return None
+    except Exception as e:
+        print("⚠️ Error downloading PDF:", e)
+        return None
+
+# 🔹 Handle rwa-play-on m3u8 proxy download
+def download_m3u8_proxy(url, name="Downloaded_Video.mp4"):
+    try:
+        decoded = unquote(url)
+        if "rwa-play-on.vercel.app/proxy" not in decoded:
+            print("❌ Not a supported m3u8 proxy:", decoded)
+            return None
+        print(f"🎥 Downloading video from {decoded}")
+        cmd = f'ffmpeg -y -i "{decoded}" -c copy -bsf:a aac_adtstoasc "{name}"'
+        subprocess.run(cmd, shell=True, check=True)
+        print(f"✅ Video saved as {name}")
+        return name
+    except Exception as e:
+        print("⚠️ Video proxy download error:", e)
+        return None
+        
 
