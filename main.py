@@ -99,4 +99,48 @@ async def url_handler(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(f"❌ **Error:** `{e}`")
-    
+
+@bot.on_message(filters.document)
+async def document_handler(bot: Client, m: Message):
+    try:
+        document = m.document
+        file_name = document.file_name
+        file_path = await bot.download_media(document)
+
+        await m.reply_text(f"📂 File `{file_name}` received and saved successfully!")
+        await asyncio.sleep(2)
+
+        if file_name.endswith(".txt"):
+            await m.reply_text("📤 Uploading your TXT file to process...")
+            processed_file = await helper.process_txt(file_path)
+            await m.reply_document(document=processed_file, caption="✅ Processed TXT file.")
+            os.remove(processed_file)
+
+        elif file_name.endswith(".pdf"):
+            await m.reply_text("📤 Processing your PDF file...")
+            processed_pdf = await helper.process_pdf(file_path)
+            await m.reply_document(document=processed_pdf, caption="✅ Processed PDF file.")
+            os.remove(processed_pdf)
+
+        else:
+            await m.reply_text("⚠️ Unsupported file type. Please send a TXT or PDF file.")
+
+        os.remove(file_path)
+
+    except Exception as e:
+        await m.reply_text(f"❌ **Error while handling document:** `{e}`")
+        
+@bot.on_message(filters.command(["status"]))
+async def status_handler(bot: Client, m: Message):
+    try:
+        await m.reply_text("🔍 Checking server status...")
+        async with ClientSession() as session:
+            async with session.get(f"{api_url}status", headers={"Authorization": f"Bearer {api_token}"}) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    await m.reply_text(f"✅ **Server Status:** {data.get('status', 'unknown')}")
+                else:
+                    await m.reply_text("⚠️ Unable to fetch status from server.")
+    except Exception as e:
+        await m.reply_text(f"❌ **Status Check Failed:** `{e}`")
+            
