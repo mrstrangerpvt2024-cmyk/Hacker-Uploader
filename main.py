@@ -223,7 +223,7 @@ async def account_login(bot: Client, m: Message):
     except Exception as e:
         await m.reply_text(f"⚠️ Error: {str(e)}")
 
-                 elif any(img in url.lower() for img in ['.jpeg', '.png', '.jpg']):
+            elif any(img in url.lower() for img in ['.jpeg', '.png', '.jpg']):
                         try:
                             subprocess.run(['wget', url, '-O', f'{name}.jpg'], check=True)  # Fixing this line
                             await bot.send_photo(
