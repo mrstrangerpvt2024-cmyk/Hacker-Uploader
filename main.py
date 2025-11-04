@@ -405,4 +405,107 @@ async def account_login(bot: Client, m: Message):
                         await bot.send_document(chat_id=m.chat.id, document=f"{name}.html", caption=cc1)
                         os.remove(f'{name}.html')
                         count += 1
+                        time.sleep(5)
+                    except FloodWait as e:
+                        await asyncio.sleep(e.x)
+                        await m.reply_text(str(e))
+                        continue
+
+                elif 'encrypted.m' in url:
+                    Show = (
+                            f"📥 DOWNLOADING...\n\n"
+                            f"┌──📦 Summary\n"
+                            f"│   ├── 🔗 Total Links: {len(links)}\n"
+                            f"│   └── ⏳ Current File: {str(count).zfill(3)}\n" 
+                            f"┌──📄 File Details\n"
+                            f"│   ├── 📝 Name: {name}\n"
+                            f"│   ├── 🎞️ Quality: {raw_text2}\n"
+                            f"│   ├── 🔗 URL: Chill maar bhai 😎\n"
+                            f"│   └── 🖼️ Thumbnail: {input6.text}\n"
+                            f"└── 🤖 Powered by:SAKSHAM \n\n"
+                            f"✅ File is downloading... Please wait ⏳"
+                        )
+                    prog = await m.reply_text(Show)
+                    res_file = await helper.download_and_decrypt_video(url, cmd, name, appxkey)
+                    filename = res_file
+
+                    await prog.delete(True)
+                    await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
+                    count += 1
+                    await asyncio.sleep(1)
+                    continue
+
+                elif 'drmcdni' in url or 'drm/wv' in url:
+                    Show = (
+                            f"📥 DOWNLOADING...\n\n"
+                            f"┌──📦 Summary\n"
+                            f"│   ├── 🔗 Total Links: {len(links)}\n"
+                            f"│   └── ⏳ Current File: {str(count).zfill(3)}\n"    
+                            f"┌──📄 File Details\n"
+                            f"│   ├── 📝 Name: {name}\n"
+                            f"│   ├── 🎞️ Quality: {raw_text2}\n"
+                            f"│   ├── 🔗 URL: Chill maar bhai 😎\n"
+                            f"│   └── 🖼️ Thumbnail: {input6.text}\n"
+                            f"└── 🤖 Powered by: SAKSHAM\n\n"
+                            f"✅ File is downloading... Please wait ⏳"
+                        )
+                    prog = await m.reply_text(Show)
+
+                    # Use the decrypt_and_merge_video function
+                    res_file = await helper.decrypt_and_merge_video(mpd, keys_string, path, name, raw_text2)
+
+                    filename = res_file
+                    await prog.delete(True)
+                    await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
+                    count += 1
+                    await asyncio.sleep(1)
+                    continue
+
+
+                else:
+                    Show = (
+                            f"📥 DOWNLOADING...\n\n"
+                            f"┌──📦 Summary\n"
+                            f"│   ├── 🔗 Total Links: {len(links)}\n"
+                            f"│   └── ⏳ Current File: {str(count).zfill(3)}\n" 
+                            f"┌──📄 File Details\n"
+                            f"│   ├── 📝 Name: {name}\n"
+                            f"│   ├── 🎞️ Quality: {raw_text2}\n"
+                            f"│   ├── 🔗 URL: Chill maar bhai 😎\n"
+                            f"│   └── 🖼️ Thumbnail: {input6.text}\n"
+                            f"└── 🤖 Powered by: SAKSHAM\n\n"
+                            f"✅ File is downloading... Please wait ⏳"
+                        )
+                    prog = await m.reply_text(Show)
+                    res_file = await helper.download_video(url, cmd, name)
+                    filename = res_file
+                    await prog.delete(True)
+                    await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
+                    count += 1
+                    time.sleep(1)
+
+            except Exception as e:
+                await m.reply_text(
+                    f"**downloading failed **\n\n{str(e)}\n\n**Name** - {name}\n"
+                )
+                count += 1
+                continue
+
+    except Exception as e:
+        await m.reply_text(e)
+    await m.reply_text("**🔥 Sᴜᴄᴄᴇsғᴜʟʟʏ Dᴏᴡɴʟᴏᴀᴅᴇᴅ Aʟʟ Lᴇᴄᴛᴜʀᴇs  SIR 🔥**")
+
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import os
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+    print(f"🌐 Web server running on port {port}")
+    server.serve_forever()
+
+threading.Thread(target=run_web, daemon=True).start()
+
+bot.run()
                   
