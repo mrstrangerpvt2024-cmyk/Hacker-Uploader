@@ -498,8 +498,18 @@ async def account_login(bot: Client, m: Message):
         await m.reply_text(e)
     await m.reply_text("**🔥 Sᴜᴄᴄᴇsғᴜʟʟʏ Dᴏᴡɴʟᴏᴀᴅᴇᴅ Aʟʟ Lᴇᴄᴛᴜʀᴇs  SIR 🔥**")
 
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import os
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+    print(f"🌐 Web server running on port {port}")
+    server.serve_forever()
+
+threading.Thread(target=run_web, daemon=True).start()
 
 bot.run()
-
 
 
