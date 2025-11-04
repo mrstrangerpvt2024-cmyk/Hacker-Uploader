@@ -341,13 +341,10 @@ async def account_login(bot: Client, m: Message):
                             copy = await bot.send_document(chat_id=m.chat.id, document=pdf_enc, caption=cc1)
                             count += 1
                             os.remove(pdf_enc)
-                            continue
-
-
+                            continue 
                 
-            
-
-            elif "rwa-play-on.vercel.app/proxy" in url:
+                
+                elif "rwa-play-on.vercel.app/proxy" in url:
                 vid_file = helper.download_m3u8_proxy(url, f"{name}.mp4")
                 if vid_file:
                     await bot.send_video(chat_id=m.chat.id, video=vid_file, caption=cc)
