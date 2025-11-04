@@ -65,4 +65,38 @@ async def start_handler(bot: Client, m: Message):
 async def stop_handler(_, m: Message):
     await m.reply_text("🚦STOPPED🚦", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
+
+@bot.on_message(filters.command(["txt"]))
+async def txt_handler(bot: Client, m: Message):
+    await m.reply_text("📄 **Please send me the TXT file URL or upload your TXT file.**")
+
+@bot.on_message(filters.text & filters.incoming)
+async def url_handler(bot: Client, m: Message):
+    try:
+        url = m.text.strip()
+        name = "downloaded_file"
+
+        if url.endswith(".txt"):
+            await m.reply_text("📥 Downloading TXT file...")
+            file_path = await helper.download_txt(url, name)
+            await m.reply_document(document=file_path, caption="✅ TXT file downloaded successfully!")
+            os.remove(file_path)
+
+        elif ".pdf" in url:
+            await m.reply_text("📚 Downloading PDF file...")
+            pdf_path = await helper.download_pdf(url, f"{name}.pdf")
+            await m.reply_document(document=pdf_path, caption="✅ PDF downloaded successfully!")
+            os.remove(pdf_path)
+
+        elif ".mp4" in url or "video" in url:
+            await m.reply_text("🎬 Downloading video, please wait...")
+            video_path = await helper.download_video(url, f"{name}.mp4")
+            await m.reply_document(document=video_path, caption="✅ Video downloaded successfully!")
+            os.remove(video_path)
+
+        else:
+            await m.reply_text("⚠️ Unsupported link or file type!")
+
+    except Exception as e:
+        await m.reply_text(f"❌ **Error:** `{e}`")
     
