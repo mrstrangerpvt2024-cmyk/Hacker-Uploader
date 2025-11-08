@@ -13,11 +13,11 @@
     "stack": "container",
     "env": {
         "API_ID": {
-            "description": "Enter your API id You can generate by https://my.telegram.org/auth",
+            "description": "22470912",
             "required": true
         },
         "API_HASH": {
-            "description": "Enter your API Hash You can generate by https://my.telegram.org/auth",
+            "description": "511be78079ed5d4bd4c967bc7b5ee023",
             "required": true
         },
         "BOT_TOKEN": {
